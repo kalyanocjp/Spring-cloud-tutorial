@@ -1,0 +1,11 @@
+package com.example.ui.model.response;
+
+
+public class User {
+	
+	private String fName;
+	private String lName;
+	private String emaiId;
+	private String userId;
+
+}

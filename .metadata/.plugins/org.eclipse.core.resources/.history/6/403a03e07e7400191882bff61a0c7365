@@ -1,0 +1,82 @@
+package com.example.ui.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.validation.Valid;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.ui.model.request.UpdateUser;
+import com.example.ui.model.request.UserRequest;
+import com.example.ui.model.response.User;
+
+@RestController
+@RequestMapping("users")
+public class UserController {
+
+	// Creating and storing static data
+	Map<String, User> usersCollection = new HashMap<>();
+
+	@GetMapping
+	public /* User */ String getUsers(
+			@RequestParam(value = "page", defaultValue = "1", required = false) final int page,
+			@RequestParam(value = "limit", defaultValue = "50") final int limit) {
+		return "get user was called for page:" + page + " limit:" + limit;
+	}
+
+	@GetMapping(path = "/{userId}", produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<User> getUser(@PathVariable final String userId) {
+		if (null != usersCollection.get(userId)) {
+			return new ResponseEntity<User>(usersCollection.get(userId), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
+		}
+	}
+
+	@PostMapping
+	public ResponseEntity<User> createUser(@Valid @RequestBody UserRequest userRequest) {
+		User user = new User();
+		user.setEmaiId(userRequest.getEmaiId());
+		user.setFName(userRequest.getFName());
+		user.setLName(userRequest.getLName());
+		user.setUserId(userRequest.getUserId());
+		usersCollection.put(userRequest.getUserId(), user);
+		return new ResponseEntity<User>(user, HttpStatus.OK);
+	}
+
+	@PutMapping(path = "/{userId}", consumes = { MediaType.APPLICATION_XML_VALUE,
+			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE,
+					MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<User> updateUser(@RequestBody UpdateUser updateUser) {
+		User user = usersCollection.get(updateUser.getUserId());
+		if (null !=user) {
+			user.setFName(updateUser.getFName());
+			user.setLName(updateUser.getLName());
+			user.setUserId(updateUser.getUserId());
+			user.setEmaiId(user.getEmaiId());
+			usersCollection.put(updateUser.getUserId(), )
+			return new ResponseEntity<User>(user, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
+		}
+	}
+
+	@DeleteMapping
+	public /* User */ String deleteUser() {
+		return "delete user was called";
+	}
+
+}

@@ -1,0 +1,15 @@
+package com.example.ui.model.request;
+
+import javax.validation.constraints.NotNull;
+
+import lombok.Data;
+
+@Data
+public class UserRequest {
+	@NotNull(message="First Name cannot be null.")
+	private String fName;
+	private String lName;
+	private String emaiId;
+	private String userId;
+
+}

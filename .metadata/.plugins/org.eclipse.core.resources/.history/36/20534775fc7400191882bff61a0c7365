@@ -1,0 +1,5 @@
+package com.example.ui.model.exception;
+
+public class UserServiceException extends Exception {
+
+}

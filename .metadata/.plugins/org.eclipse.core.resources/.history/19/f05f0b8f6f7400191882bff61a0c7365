@@ -1,0 +1,11 @@
+package com.example.ui.model.request;
+
+@Data
+public class UserRequest {
+	
+	private String fName;
+	private String lName;
+	private String emaiId;
+	private String userId;
+
+}

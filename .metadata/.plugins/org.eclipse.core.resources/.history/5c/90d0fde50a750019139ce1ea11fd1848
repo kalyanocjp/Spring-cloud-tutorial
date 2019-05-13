@@ -1,0 +1,4 @@
+spring.application.name=mobile-app-service
+server.servlet.context-path=/mobile-context
+server.port=8090
+spring.devtools.restart.enabled=true

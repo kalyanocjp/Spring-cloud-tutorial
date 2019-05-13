@@ -1,0 +1,13 @@
+package com.example.ui.service;
+
+import org.springframework.stereotype.Service;
+
+import com.example.ui.model.request.UserRequest;
+import com.example.ui.model.response.User;
+
+@Service
+public interface UserService {
+	
+	public User createUserService(UserRequest userRequest);
+
+}

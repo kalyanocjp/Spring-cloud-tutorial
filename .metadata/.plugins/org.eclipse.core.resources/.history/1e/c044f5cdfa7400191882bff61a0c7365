@@ -1,0 +1,9 @@
+package com.example.ui.model.exception;
+
+public class ErrorMessage extends Exception{
+	
+	public ErrorMessage(String mString) {
+		super();
+	}
+	
+}

@@ -1,0 +1,91 @@
+package com.example.ui.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
+import javax.validation.Valid;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.ui.model.exception.ErrorMessage;
+import com.example.ui.model.exception.UserServiceException;
+import com.example.ui.model.request.UpdateUser;
+import com.example.ui.model.request.UserRequest;
+import com.example.ui.model.response.User;
+
+@RestController
+@RequestMapping("users")
+public class UserController {
+
+	// Creating and storing static data
+	Map<String, User> usersCollection = new HashMap<>();
+
+	@GetMapping
+	public /* User */ String getUsers(
+			@RequestParam(value = "page", defaultValue = "1", required = false) final int page,
+			@RequestParam(value = "limit", defaultValue = "50") final int limit) {
+		return "get user was called for page:" + page + " limit:" + limit;
+	}
+
+	@GetMapping(path = "/{userId}", produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<User> getUser(@PathVariable final String userId) {
+		if (null != usersCollection.get(userId)) {
+			return new ResponseEntity<User>(usersCollection.get(userId), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
+		}
+	}
+
+	@PostMapping
+	public ResponseEntity<User> createUser(@Valid @RequestBody UserRequest userRequest) {
+		User user = new User();
+		String userId = UUID.randomUUID().toString();
+		user.setEmaiId(userRequest.getEmaiId());
+		user.setFName(userRequest.getFName());
+		user.setLName(userRequest.getLName());
+		user.setUserId(userId);
+		usersCollection.put(userId, user);
+		return new ResponseEntity<User>(user, HttpStatus.OK);
+	}
+
+	@PutMapping(path = "/{userId}", consumes = { MediaType.APPLICATION_XML_VALUE,
+			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE,
+					MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<String> updateUser(@RequestBody UpdateUser updateUser) {
+		User user = usersCollection.get(updateUser.getUserId());
+		if (null !=user) {
+			user.setFName(updateUser.getFName());
+			user.setLName(updateUser.getLName());
+			user.setUserId(updateUser.getUserId());
+			user.setEmaiId(user.getEmaiId());
+			usersCollection.put(updateUser.getUserId(), user);
+			return new ResponseEntity<String>("User updated successfully", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
+		}
+	}
+
+	@DeleteMapping(path="/{userId}")
+	public ResponseEntity<String> deleteUser(@PathVariable String userId) throws Exception {
+		if(usersCollection.get(userId) != null) {
+		usersCollection.remove(userId);
+		return new ResponseEntity<String>("Deleted "+userId+" user successfully.", HttpStatus.OK);
+		}else {
+			throw new UserServiceException("No user with user id "+userId);
+		}
+	}
+
+}

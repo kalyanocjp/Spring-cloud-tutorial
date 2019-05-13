@@ -1,0 +1,11 @@
+package com.example.ui.model.exception;
+
+import java.util.Date;
+
+@Data
+public class ErrorMessage extends Exception{
+	
+	private String message;
+	private Date date;
+	
+}
